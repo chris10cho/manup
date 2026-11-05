@@ -18,7 +18,11 @@
     <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffffff"/><stop offset="0.35" stop-color="#d5dcd9"/><stop offset="0.7" stop-color="#8b9893"/><stop offset="1" stop-color="#58645f"/>
     </linearGradient>
-    <filter id="blur" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="12"/></filter>
+    <radialGradient id="sheen" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#9fb0a6" stop-opacity="0.34"/><stop offset="0.6" stop-color="#9fb0a6" stop-opacity="0.12"/><stop offset="1" stop-color="#9fb0a6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur2" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="3.5"/></filter>
+    <filter id="blur" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="9"/></filter>
     <g id="side">
       <rect x="112" y="-103" width="40" height="206" rx="12" fill="url(#plate)" stroke="#4cc26b" stroke-opacity="0.45" stroke-width="1.5"/>
       <rect x="116" y="-97" width="7" height="194" rx="3.5" fill="#fff" opacity="0.8"/>
@@ -30,9 +34,13 @@
   </defs>
   <rect width="512" height="512" fill="url(#bg)"/>
   <rect width="512" height="512" fill="url(#glow)"/>
-  <ellipse cx="270" cy="392" rx="190" ry="34" fill="url(#floor)"/>
-  <ellipse cx="270" cy="392" rx="140" ry="14" fill="#0c0e0d" opacity="0.7" filter="url(#blur)"/>
-  <g transform="translate(256 256) rotate(-20)">
+  <ellipse cx="256" cy="414" rx="185" ry="38" fill="url(#sheen)"/>
+  <ellipse cx="256" cy="424" rx="150" ry="11" fill="#07090a" opacity="0.5" filter="url(#blur)"/>
+  <ellipse cx="138" cy="426" rx="50" ry="6.5" fill="#050707" opacity="0.9" filter="url(#blur2)"/>
+  <ellipse cx="375" cy="424" rx="50" ry="6.5" fill="#050707" opacity="0.9" filter="url(#blur2)"/>
+  <ellipse cx="138" cy="425" rx="30" ry="2.4" fill="#000" opacity="0.8" filter="url(#blur2)"/>
+  <ellipse cx="375" cy="423" rx="30" ry="2.4" fill="#000" opacity="0.8" filter="url(#blur2)"/>
+  <g transform="translate(256 330) rotate(-1) scale(0.9)">
     <rect x="-196" y="-12" width="392" height="24" rx="12" fill="url(#steel)"/>
     <rect x="-196" y="-7" width="392" height="4" rx="1.5" fill="#fff" opacity="0.95"/>
     <use href="#side"/>
