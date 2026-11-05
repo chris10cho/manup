@@ -40,7 +40,12 @@ export function migrate(s: AppState): AppState {
       return { ...e, weight: weights.get(k) ?? e.weight, target: targets.get(k) ?? e.target }
     }),
   }))
-  return { ...s, program: { ...SEED_PROGRAM, days, week: old.week }, active: null }
+  return {
+    ...s,
+    profile: { ...s.profile, goals: SEED_PROFILE.goals },
+    program: { ...SEED_PROGRAM, days, week: old.week },
+    active: null,
+  }
 }
 
 export function stepFor(exerciseId: string, units: 'lb' | 'kg'): number {
@@ -54,9 +59,17 @@ export function finishedThisWeek(s: AppState): Set<string> {
   )
 }
 
-export function nextDay(s: AppState): PlanDay | null {
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+/**
+ * What to suggest now: today's planned day if it is not done, else the first required day
+ * not done yet, else an optional one.
+ */
+export function nextDay(s: AppState, now: Date = new Date()): PlanDay | null {
   const done = finishedThisWeek(s)
-  return s.program.days.find((d) => !done.has(d.id)) ?? null
+  const left = s.program.days.filter((d) => !done.has(d.id))
+  const today = WEEKDAYS[now.getDay()]
+  return left.find((d) => d.when === today) ?? left.find((d) => !d.optional) ?? left[0] ?? null
 }
 
 export function weekComplete(s: AppState): boolean {
@@ -166,6 +179,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const day = s.program.days.find((d) => d.id === act.dayId)!
         const deload = isDeloadWeek(act.week)
         const exercises = day.exercises.map((pe) => {
+          // Stretches and mobility drills are done for quality, not progressed.
+          if (getExercise(pe.exerciseId)?.kind === 'mobility') return pe
           const logged = act.sets.filter((x) => x.exerciseId === pe.exerciseId)
           const used = logged
             .filter((x) => x.done && x.weight != null && x.weight > 0)

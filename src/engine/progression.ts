@@ -46,6 +46,8 @@ export interface ProgressionResult {
 }
 
 const STEP_BY_UNIT = { reps: 1, sec: 5, min: 2 } as const
+/** Holds stop growing here. Past a minute or so, add difficulty instead of time. */
+export const MAX_HOLD_SEC = 90
 
 /**
  * Decide the next prescription for one exercise from what happened this session.
@@ -98,7 +100,8 @@ export function progress(
     }
     // no load: add reps / seconds / minutes
     const inc = STEP_BY_UNIT[ex.unit] * bump
-    const t = ex.target + inc
+    const t = ex.unit === 'sec' ? Math.min(MAX_HOLD_SEC, ex.target + inc) : ex.target + inc
+    if (t === ex.target) return { next: { ...ex, missStreak: 0 }, message: `${name}: hold at ${t} ${ex.unit}` }
     return {
       next: { ...ex, target: t, missStreak: 0 },
       message: `${name}: ${ex.target} -> ${t} ${ex.unit}`,

@@ -88,6 +88,14 @@ describe('progress', () => {
   })
 })
 
+describe('hold cap', () => {
+  it('stops growing a hold at the cap', () => {
+    const plank: PlanExercise = { ...base, weight: null, target: 90, unit: 'sec' }
+    const r = progress(plank, sets([90, 90, 90], null, 90), 'ok', 1, 5, 'Plank')
+    expect(r.next.target).toBe(90)
+  })
+})
+
 describe('deload', () => {
   it('flags every 4th week', () => {
     expect([1, 2, 3, 4, 5, 8].map(isDeloadWeek)).toEqual([false, false, false, true, false, true])

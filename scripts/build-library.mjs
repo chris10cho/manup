@@ -93,6 +93,13 @@ const curated = [
   ['Front_Squat_Clean_Grip', 'lift', 'squat', 'gym'],
   ['Straight-Arm_Dumbbell_Pullover', 'lift', 'vpull', 'dumbbell'],
   ['Push_Press', 'lift', 'vpush', 'gym'],
+  // mobility / flexibility
+  ['Wrist_Circles', 'mobility', 'stretch', 'none'],
+  ['Shoulder_Circles', 'mobility', 'stretch', 'none'],
+  ['Triceps_Stretch', 'mobility', 'stretch', 'none'],
+  ['Kneeling_Hip_Flexor', 'mobility', 'stretch', 'none'],
+  ['IT_Band_and_Glute_Stretch', 'mobility', 'stretch', 'none'],
+  ['Standing_Hamstring_and_Calf_Stretch', 'mobility', 'stretch', 'none'],
 ];
 
 const out = [];
