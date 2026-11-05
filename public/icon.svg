@@ -1,53 +1,72 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0.1" y1="0" x2="0.9" y2="1">
-      <stop offset="0" stop-color="#7bf0a4"/>
-      <stop offset="0.45" stop-color="#1fa851"/>
-      <stop offset="1" stop-color="#074a2a"/>
+      <stop offset="0" stop-color="#8ff7b3"/><stop offset="0.4" stop-color="#26b35a"/>
+      <stop offset="0.75" stop-color="#0e7a3e"/><stop offset="1" stop-color="#064527"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0.28" cy="0.18" r="0.7">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    <radialGradient id="glow" cx="0.25" cy="0.15" r="0.75">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="0.5" stop-color="#dfe9e2"/>
-      <stop offset="1" stop-color="#9db3a5"/>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#c8ffd9" stop-opacity="0.55"/><stop offset="1" stop-color="#c8ffd9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="#e3eee7"/><stop offset="1" stop-color="#a9c0b2"/>
     </linearGradient>
-    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#8aa192"/>
-      <stop offset="1" stop-color="#4f6a5b"/>
+    <linearGradient id="faceS" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4fff8"/><stop offset="0.55" stop-color="#bfe8cd"/><stop offset="1" stop-color="#7fb894"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2f8f4"/><stop offset="0.45" stop-color="#b9cbc0"/><stop offset="1" stop-color="#5d7769"/>
+    </linearGradient>
+    <linearGradient id="bodyS" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6f3e0"/><stop offset="0.45" stop-color="#8dc5a1"/><stop offset="1" stop-color="#43775a"/>
     </linearGradient>
     <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="0.35" stop-color="#c9d2cd"/>
-      <stop offset="0.7" stop-color="#7d8c84"/>
-      <stop offset="1" stop-color="#4a5852"/>
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.35" stop-color="#d3dcd7"/>
+      <stop offset="0.7" stop-color="#84948b"/><stop offset="1" stop-color="#4d5c55"/>
     </linearGradient>
-    <filter id="soft" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+    <filter id="soft" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="10"/></filter>
   </defs>
   <rect width="512" height="512" fill="url(#bg)"/>
   <rect width="512" height="512" fill="url(#glow)"/>
-  <!-- ground shadow -->
-  <ellipse cx="268" cy="378" rx="150" ry="16" fill="#031f10" opacity="0.5" filter="url(#soft)"/>
+  <circle cx="256" cy="256" r="200" fill="url(#halo)"/>
+  <ellipse cx="262" cy="372" rx="150" ry="15" fill="#02210f" opacity="0.55" filter="url(#soft)"/>
   <g transform="rotate(-16 256 256)">
-    <!-- bar -->
-    <rect x="92" y="246" width="328" height="20" rx="10" fill="url(#steel)"/>
-    <!-- left plates (back edge for thickness, then face) -->
-    <rect x="127" y="160" width="46" height="196" rx="14" fill="url(#edge)"/>
-    <rect x="118" y="154" width="46" height="196" rx="14" fill="url(#plate)"/>
-    <rect x="125" y="160" width="6" height="150" rx="3" fill="#fff" opacity="0.7"/>
-    <rect x="180" y="178" width="38" height="156" rx="12" fill="url(#edge)"/>
-    <rect x="172" y="172" width="38" height="156" rx="12" fill="url(#plate)"/>
-    <rect x="178" y="178" width="5" height="116" rx="2.5" fill="#fff" opacity="0.7"/>
-    <!-- right plates -->
-    <rect x="302" y="178" width="38" height="156" rx="12" fill="url(#edge)"/>
-    <rect x="294" y="172" width="38" height="156" rx="12" fill="url(#plate)"/>
-    <rect x="300" y="178" width="5" height="116" rx="2.5" fill="#fff" opacity="0.7"/>
-    <rect x="355" y="160" width="46" height="196" rx="14" fill="url(#edge)"/>
-    <rect x="346" y="154" width="46" height="196" rx="14" fill="url(#plate)"/>
-    <rect x="353" y="160" width="6" height="150" rx="3" fill="#fff" opacity="0.7"/>
-    <!-- bar highlight on top of plates' gap -->
-    <rect x="214" y="248" width="76" height="6" rx="3" fill="#fff" opacity="0.8"/>
+    <rect x="86" y="246" width="340" height="20" rx="10" fill="url(#steel)"/>
+    <rect x="86" y="250" width="340" height="4" rx="2" fill="#fff" opacity="0.7"/>
+    
+    <ellipse cx="384" cy="256" rx="17" ry="86" fill="#2f4a3b"/>
+    <path d="M350 170 H384 V342 H350 Z" fill="url(#bodyS)"/>
+    <ellipse cx="384" cy="256" rx="17" ry="86" fill="url(#bodyS)"/>
+    <ellipse cx="350" cy="256" rx="17" ry="86" fill="url(#faceS)"/>
+    <ellipse cx="350" cy="256" rx="12.24" ry="73.96" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="3"/>
+    <ellipse cx="350" cy="256" rx="5.1" ry="17.2" fill="url(#steel)" stroke="#3b5446" stroke-width="2"/>
+    <ellipse cx="340.65" cy="217.3" rx="2.3800000000000003" ry="25.8" fill="#fff" opacity="0.7" transform="rotate(8 350 256)"/>
+    
+    <ellipse cx="334" cy="256" rx="19" ry="112" fill="#2f4a3b"/>
+    <path d="M300 144 H334 V368 H300 Z" fill="url(#body)"/>
+    <ellipse cx="334" cy="256" rx="19" ry="112" fill="url(#body)"/>
+    <ellipse cx="300" cy="256" rx="19" ry="112" fill="url(#face)"/>
+    <ellipse cx="300" cy="256" rx="13.68" ry="96.32" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="3"/>
+    <ellipse cx="300" cy="256" rx="5.7" ry="22.400000000000002" fill="url(#steel)" stroke="#3b5446" stroke-width="2"/>
+    <ellipse cx="289.55" cy="205.6" rx="2.66" ry="33.6" fill="#fff" opacity="0.7" transform="rotate(8 300 256)"/>
+    
+    
+    <ellipse cx="190" cy="256" rx="19" ry="112" fill="#2f4a3b"/>
+    <path d="M156 144 H190 V368 H156 Z" fill="url(#body)"/>
+    <ellipse cx="190" cy="256" rx="19" ry="112" fill="url(#body)"/>
+    <ellipse cx="156" cy="256" rx="19" ry="112" fill="url(#face)"/>
+    <ellipse cx="156" cy="256" rx="13.68" ry="96.32" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="3"/>
+    <ellipse cx="156" cy="256" rx="5.7" ry="22.400000000000002" fill="url(#steel)" stroke="#3b5446" stroke-width="2"/>
+    <ellipse cx="145.55" cy="205.6" rx="2.66" ry="33.6" fill="#fff" opacity="0.7" transform="rotate(8 156 256)"/>
+    
+    <ellipse cx="140" cy="256" rx="17" ry="86" fill="#2f4a3b"/>
+    <path d="M106 170 H140 V342 H106 Z" fill="url(#bodyS)"/>
+    <ellipse cx="140" cy="256" rx="17" ry="86" fill="url(#bodyS)"/>
+    <ellipse cx="106" cy="256" rx="17" ry="86" fill="url(#faceS)"/>
+    <ellipse cx="106" cy="256" rx="12.24" ry="73.96" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="3"/>
+    <ellipse cx="106" cy="256" rx="5.1" ry="17.2" fill="url(#steel)" stroke="#3b5446" stroke-width="2"/>
+    <ellipse cx="96.65" cy="217.3" rx="2.3800000000000003" ry="25.8" fill="#fff" opacity="0.7" transform="rotate(8 106 256)"/>
   </g>
 </svg>
