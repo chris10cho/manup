@@ -25,7 +25,7 @@ Mobile-first workout tracker (React + TypeScript + Vite PWA). Claude is the trai
 - **Changing the built-in program:** edit `src/seed.ts` AND bump `SEED_PROGRAM.id` (`seed-N`). `migrate()` then swaps it in on users' phones while keeping their weights and week. Programs imported from the trainer have non-`seed-` ids and are never overwritten.
 - Mobility/stretch exercises (`kind: 'mobility'`) are never progressed. Timed holds cap at `MAX_HOLD_SEC`.
 - Exercise ids must exist in `src/data/exercises.json` (a test checks the seed). Demo photos are start/end frames from free-exercise-db; custom drills borrow photos from a similar move and say so.
-- Style: "gym logbook". Paper/ink surfaces, ruled sections, square corners, condensed uppercase headings (Barlow Condensed), a single green accent, no emoji, no shadows or rounded cards. Use the CSS variables in `index.css`; do not hard-code colours. Keep touch targets at least 48px.
+- Style: "gym logbook". Paper/ink surfaces, ruled sections, square corners, condensed uppercase headings (Barlow Condensed), a single green accent, no emoji, no shadows or rounded cards. Use the CSS variables in `index.css`; do not hard-code colours. Keep touch targets at least 48px. The app icon (`public/icon*.png`, `icon.svg`) is the one deliberate exception: a green gradient with a 3D barbell, full-bleed with no dark frame (a dark frame shows as a black box on the phone home screen). Icon art keeps content inside the central 410px safe zone.
 - Vite `base` is `/manup/`; asset and manifest paths depend on it.
 
 ## Commands
