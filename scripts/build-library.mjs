@@ -145,6 +145,16 @@ const custom = [
     ],
   },
   {
+    id: 'X_Straight_Bar_Dip', name: 'Straight-Bar Dip', kind: 'bodyweight', pattern: 'skill', equip: 'bodyweight',
+    borrow: 'Dips_-_Chest_Version',
+    instructions: [
+      'Check the bar is firmly anchored and rated for your body weight before you start.',
+      'Jump up to support over the bar, hands on the bar, chest leaning slightly forward, elbows tucked.',
+      'Lower slowly until the bar is at your lower chest and your shoulders are still active, then press back to full lockout.',
+      'This is the top half of a muscle-up. Stop the set when you lose control or your elbows flare.',
+    ],
+  },
+  {
     id: 'X_MU_Transition', name: 'Muscle-Up Transition Drill', kind: 'bodyweight', pattern: 'skill', equip: 'bodyweight',
     borrow: 'Muscle_Up',
     instructions: [

@@ -21,22 +21,29 @@ export interface AppState {
 const DB = 'workout-app'
 const KEY = 'state'
 
-const dbp = openDB(DB, 1, {
-  upgrade(db) {
-    db.createObjectStore('kv')
-  },
-})
+// Opened on first use so importing this module never touches browser APIs.
+let opened: ReturnType<typeof openDb> | null = null
+function openDb() {
+  return openDB(DB, 1, {
+    upgrade(db) {
+      db.createObjectStore('kv')
+    },
+  })
+}
+function getDb() {
+  return (opened ??= openDb())
+}
 
 export async function loadState(): Promise<AppState | null> {
   try {
-    return ((await (await dbp).get('kv', KEY)) as AppState | undefined) ?? null
+    return ((await (await getDb()).get('kv', KEY)) as AppState | undefined) ?? null
   } catch {
     return null
   }
 }
 
 export async function saveState(s: AppState): Promise<void> {
-  await (await dbp).put('kv', s, KEY)
+  await (await getDb()).put('kv', s, KEY)
 }
 
 /** Ask the browser not to evict our data when storage is tight. */

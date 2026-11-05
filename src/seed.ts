@@ -38,6 +38,7 @@ const days: PlanDay[] = [
   {
     id: 'd0',
     label: 'Day 1 · Heavy Bench + Pull Strength',
+    when: 'Mon',
     focus: 'Bench strength, weighted pulls',
     exercises: [
       ex('Barbell_Bench_Press_-_Medium_Grip', 4, 4, 150, {
@@ -56,6 +57,7 @@ const days: PlanDay[] = [
   {
     id: 'd1',
     label: 'Day 2 · Lower Body',
+    when: 'Tue',
     focus: 'Squat, hinge, single leg, core',
     exercises: [
       ex('Barbell_Squat', 4, 5, null, { restSec: 150 }),
@@ -68,6 +70,7 @@ const days: PlanDay[] = [
   {
     id: 'd2',
     label: 'Day 3 · Muscle-Up Skill + Bench Volume',
+    when: 'Wed',
     focus: 'Explosive pulling, transition, bench volume',
     exercises: [
       ex('X_Explosive_Pullup', 5, 3, null, {
@@ -80,15 +83,17 @@ const days: PlanDay[] = [
       }),
       hold('X_False_Grip_Hang', 3, 20, 60),
       ex('Barbell_Bench_Press_-_Medium_Grip', 4, 8, 125, { restSec: 120, note: 'Volume day. Lighter, clean reps.' }),
-      ex('Weighted_Bench_Dip', 3, 10, null, {
+      ex('X_Straight_Bar_Dip', 3, 8, null, {
+        unit: 'reps',
         restSec: 90,
-        note: 'Stand-in for bar dips. Weight on your lap. Dip strength is what finishes a muscle-up.',
+        note: 'Jump up to the pull-up bar. This is the top half of a muscle-up. Add reps first, then a weighted vest or dumbbell between your feet.',
       }),
     ],
   },
   {
     id: 'd3',
     label: 'Day 4 (optional) · Pull + Shoulders + Hips',
+    when: 'Thu',
     focus: 'Pull volume, shoulders, swings',
     optional: true,
     exercises: [
@@ -103,7 +108,11 @@ const days: PlanDay[] = [
 ]
 
 export const SEED_PROGRAM: Program = {
-  id: 'seed-1',
+  id: 'seed-2',
+  outside: [
+    { when: 'Sat', label: 'Climbing' },
+    { when: 'Sun', label: 'Soccer (morning)' },
+  ],
   createdAt: new Date().toISOString(),
   week: 1,
   cycleDone: 0,
@@ -111,8 +120,9 @@ export const SEED_PROGRAM: Program = {
   notes: [
     'Bench: your estimated max is about 185 lb (from 175 x 2), so 225 is about +40 lb. At 2 bench days per week, plan on roughly 16 to 24 weeks.',
     'Muscle-up: with 12 strict pull-ups and climbing, a first muscle-up often lands in 2 to 4 months. 10 in a row is a longer road, think 6 to 12+ months.',
-    'Soccer and climbing count as training. Keep Day 2 (legs) away from soccer day, and keep Day 4 light before a hard climbing session.',
-    'Only have 3 days? Skip Day 4. It is the first thing to drop.',
+    'Week layout: Mon Day 1, Tue Day 2, Wed Day 3, Thu Day 4 (optional), Fri rest, Sat climb, Sun soccer. Friday is rest so your forearms and lats are fresh for Saturday. Legs are on Tuesday, 5 days before soccer.',
+    'Only have 3 days? Skip Day 4. It is the first thing to drop. Never move a pulling day to Friday.',
+    'Bar dips: check the pull-up bar is anchored and rated for your weight before dipping on it. Jump up to start, lower slowly.',
     'Every 4th week is a lighter deload week (about 85% weight, fewer sets). Do not skip it.',
     'Starting weights marked blank are calibrated from the first set you log.',
   ],

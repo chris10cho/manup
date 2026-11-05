@@ -128,11 +128,23 @@ export function Today() {
             className="row flex min-h-14 w-full items-center justify-between gap-3 py-2 text-left first:border-t-0"
           >
             <span>
-              <span className="display block text-xl">{d.label}</span>
+              <span className="display block text-xl">
+                {d.when && <span className="num mr-2 text-muted">{d.when}</span>}
+                {d.label}
+              </span>
               <span className="text-[13px] text-muted">{d.focus}</span>
             </span>
             <span className={`label shrink-0 ${done.has(d.id) ? '!text-ink font-bold' : ''}`}>{done.has(d.id) ? 'Done' : 'Start'}</span>
           </button>
+        ))}
+        {state.program.outside?.map((o) => (
+          <div key={o.when} className="row flex min-h-12 items-center justify-between py-2 text-muted">
+            <span className="display text-xl">
+              <span className="num mr-2">{o.when}</span>
+              {o.label}
+            </span>
+            <span className="label">Outside</span>
+          </div>
         ))}
       </div>
     </div>

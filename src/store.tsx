@@ -19,6 +19,30 @@ export function freshState(): AppState {
   }
 }
 
+/**
+ * If the saved program is an older built-in one, swap in the current built-in program
+ * but keep the user's weights and week. Programs imported from the trainer are left alone.
+ */
+export function migrate(s: AppState): AppState {
+  const old = s.program
+  if (!old.id.startsWith('seed-') || old.id === SEED_PROGRAM.id) return s
+  const weights = new Map<string, number>()
+  const targets = new Map<string, number>()
+  for (const d of old.days)
+    for (const e of d.exercises) {
+      if (e.weight != null) weights.set(d.id + e.exerciseId, e.weight)
+      targets.set(d.id + e.exerciseId, e.target)
+    }
+  const days = SEED_PROGRAM.days.map((d) => ({
+    ...d,
+    exercises: d.exercises.map((e) => {
+      const k = d.id + e.exerciseId
+      return { ...e, weight: weights.get(k) ?? e.weight, target: targets.get(k) ?? e.target }
+    }),
+  }))
+  return { ...s, program: { ...SEED_PROGRAM, days, week: old.week }, active: null }
+}
+
 export function stepFor(exerciseId: string, units: 'lb' | 'kg'): number {
   const e = getExercise(exerciseId)
   return e ? increment(e.equip, e.pattern, units) : 5
@@ -69,7 +93,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     loadState().then((s) => {
-      setState(s ?? freshState())
+      setState(s ? migrate(s) : freshState())
       ready.current = true
     })
     requestPersistence()

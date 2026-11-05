@@ -75,6 +75,8 @@ export interface PlanDay {
   label: string
   focus: string
   optional?: boolean
+  /** suggested weekday, e.g. 'Mon' */
+  when?: string
   exercises: PlanExercise[]
 }
 
@@ -86,6 +88,8 @@ export interface Program {
   /** how many days of the current cycle have been finished */
   cycleDone: number
   days: PlanDay[]
+  /** things you do outside the app that shape the week */
+  outside?: { when: string; label: string }[]
   notes: string[]
 }
 

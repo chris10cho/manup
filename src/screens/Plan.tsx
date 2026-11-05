@@ -26,7 +26,7 @@ export function Plan() {
       </section>
       {program.days.map((d) => (
         <section key={d.id} className="sheet">
-          <h3 className="display text-2xl">{d.label}</h3>
+          <h3 className="display text-2xl">{d.when ? `${d.when} · ` : ''}{d.label}</h3>
           <ul className="mt-2 text-[15px]">
             {d.exercises.map((pe) => {
               const e = getExercise(pe.exerciseId)
