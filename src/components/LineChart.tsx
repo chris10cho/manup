@@ -46,7 +46,8 @@ export function LineChart({
   // round the axis to clean numbers so ticks read 140 / 190 / 240, not 141 / 188 / 234
   const nice = hi - lo > 40 ? 10 : 5
   lo = Math.floor((lo - pad) / nice) * nice
-  hi = Math.ceil((hi + pad) / nice) * nice
+  // make the span a multiple of two steps so the middle tick is a whole step too
+  hi = lo + Math.ceil((hi + pad - lo) / (2 * nice)) * 2 * nice
   const x = (i: number) => m.l + (points.length === 1 ? (W - m.l - m.r) / 2 : (i * (W - m.l - m.r)) / (points.length - 1))
   const y = (v: number) => m.t + ((hi - v) / (hi - lo)) * (H - m.t - m.b)
   const ticks = [lo, (lo + hi) / 2, hi]

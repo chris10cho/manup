@@ -175,6 +175,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const lines: string[] = []
         const s = state
         if (!s.active) return lines
+        // Nothing ticked: do not record a workout that did not happen.
+        if (!s.active.sets.some((x) => x.done)) {
+          setState({ ...s, active: null })
+          return lines
+        }
         const act = s.active
         const day = s.program.days.find((d) => d.id === act.dayId)!
         const deload = isDeloadWeek(act.week)
@@ -189,7 +194,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const base =
             !deload && pe.weight != null && used.length ? { ...pe, weight: Math.max(...used) } : pe
           const name = getExercise(pe.exerciseId)?.name ?? pe.exerciseId
-          const r = progress(base, logged, feedback, act.week, stepFor(pe.exerciseId, s.profile.units), name)
+          const loaded = getExercise(pe.exerciseId)?.kind === 'lift'
+          const r = progress(base, logged, feedback, act.week, stepFor(pe.exerciseId, s.profile.units), name, loaded)
           if (r.message) lines.push(r.message)
           return r.next
         })

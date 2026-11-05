@@ -52,10 +52,22 @@ describe('progress', () => {
     expect(r.next.missStreak).toBe(0)
   })
 
-  it('counts an unfinished session (fewer sets than prescribed) as a miss', () => {
+  it('holds without a miss when sets were skipped but every set done hit target', () => {
     const r = progress(base, sets([5, 5], 100), 'ok', 1, 5, 'Squat')
     expect(r.next.weight).toBe(100)
+    expect(r.next.missStreak).toBe(0)
+  })
+
+  it('still counts missed reps when some sets were also skipped', () => {
+    const r = progress(base, sets([5, 3], 100), 'ok', 1, 5, 'Squat')
     expect(r.next.missStreak).toBe(1)
+  })
+
+  it('does not add reps to a loaded lift whose weight was left blank', () => {
+    const squat: PlanExercise = { ...base, weight: null, target: 5 }
+    const r = progress(squat, sets([5, 5, 5], null), 'ok', 1, 5, 'Squat', true)
+    expect(r.next.target).toBe(5)
+    expect(r.next.weight).toBeNull()
   })
 
   it('does nothing when no sets were completed', () => {

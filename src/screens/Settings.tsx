@@ -51,8 +51,11 @@ export function Settings() {
 
   function importProgram() {
     try {
-      const p = JSON.parse(paste) as Program
-      if (!Array.isArray(p.days) || p.days.some((d) => !Array.isArray(d.exercises))) throw new Error('shape')
+      const parsed = JSON.parse(paste) as Program & { program?: Program }
+      // Accept the full "Copy for trainer" export as well as a bare program.
+      const p = parsed.program && Array.isArray(parsed.program.days) ? parsed.program : parsed
+      if (!Array.isArray(p.days) || p.days.some((d) => !Array.isArray(d.exercises)))
+        throw new Error('This does not look like a program. Paste the "program" part, or the whole export.')
       for (const d of p.days)
         for (const e of d.exercises)
           if (!getExercise(e.exerciseId)) throw new Error(`Unknown exercise: ${e.exerciseId}`)
@@ -60,7 +63,7 @@ export function Settings() {
       setPaste('')
       setMsg('New program loaded. History kept.')
     } catch (e) {
-      setMsg(`Could not import: ${e instanceof Error ? e.message : 'bad format'}`)
+      setMsg(`Could not import: ${e instanceof SyntaxError ? 'that is not valid JSON' : e instanceof Error ? e.message : 'bad format'}`)
     }
   }
 

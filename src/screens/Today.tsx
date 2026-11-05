@@ -74,6 +74,10 @@ export function Today() {
           <button
             onClick={() => {
               setRest(null)
+              if (doneSets === 0) {
+                if (confirm('No sets are ticked. Discard this workout?')) store.discard()
+                return
+              }
               setSummary(store.finish(feedback))
             }}
             className="btn mt-4 w-full"

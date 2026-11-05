@@ -21,6 +21,16 @@ function bestReps(sessions: Session[], id: string): Pt[] {
   })
 }
 
+/** Best estimated one-rep max for an exercise in each training week (smooths heavy/volume days). */
+function weeklyE1rm(sessions: Session[], id: string): Pt[] {
+  const best = new Map<number, number>()
+  for (const s of sessions)
+    for (const x of s.sets)
+      if (x.exerciseId === id && x.done && x.weight)
+        best.set(s.week, Math.max(best.get(s.week) ?? 0, e1rm(x.weight, x.actual)))
+  return [...best.entries()].sort((a, b) => a[0] - b[0]).map(([w, v]) => ({ label: `Wk ${w}`, value: v }))
+}
+
 /** Epley estimate of a one-rep max. */
 export function e1rm(weight: number, reps: number): number {
   return reps <= 1 ? weight : Math.round(weight * (1 + reps / 30))
@@ -31,7 +41,7 @@ export function Progress() {
   const [mu, setMu] = useState('')
   const done = state.sessions.filter((s) => s.finished)
 
-  const bench = bestWeight(done, BENCH)
+  const bench = weeklyE1rm(done, BENCH)
   // Best estimated 1RM across every logged bench set.
   const benchSets = done.flatMap((s) => s.sets.filter((x) => x.exerciseId === BENCH && x.done && x.weight))
   // Baseline is your 175 x 2. Light-ish training sets must never lower your estimate.
@@ -66,7 +76,7 @@ export function Progress() {
           <div className="h-full bg-accent" style={{ width: `${Math.min(100, (est / 225) * 100)}%` }} />
         </div>
       </section>
-      <LineChart title="Bench: heaviest set per session" unit="lb" points={bench} goal={225} goalLabel="Goal" />
+      <LineChart title="Bench: estimated max by week" unit="lb" points={bench} goal={225} goalLabel="Goal" />
 
       <section className="sheet">
         <h3 className="display text-2xl">Goal 2 · 10 muscle-ups</h3>

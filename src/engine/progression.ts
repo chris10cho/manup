@@ -65,6 +65,8 @@ export function progress(
   week: number,
   step: number,
   name: string,
+  /** true for lifts that take a weight (so a blank weight is "not set yet", not "bodyweight") */
+  loaded = false,
 ): ProgressionResult {
   const done = logged.filter((s) => s.done)
   if (done.length === 0) return { next: ex, message: null }
@@ -81,10 +83,21 @@ export function progress(
     }
   }
 
+  // A loaded lift with no weight typed yet: wait for a weight instead of adding reps.
+  if (loaded && ex.unit === 'reps' && ex.weight == null) {
+    return { next: ex, message: `${name}: type a weight so it can be tracked` }
+  }
+
   if (isDeloadWeek(week)) return { next: ex, message: null }
 
-  const hitAll =
-    done.length >= displaySets(ex.sets, week) && done.every((s) => s.actual >= s.target)
+  const skippedSets = done.length < displaySets(ex.sets, week)
+  const missedReps = done.some((s) => s.actual < s.target)
+  const hitAll = !skippedSets && !missedReps
+
+  // Stopped early but every set you did hit its target: not a failure, just no progress yet.
+  if (skippedSets && !missedReps) {
+    return { next: ex, message: `${name}: hold (finish every set to add weight)` }
+  }
 
   if (hitAll) {
     const bump = feedback === 'easy' ? 2 : 1
