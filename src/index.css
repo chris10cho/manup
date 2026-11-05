@@ -1,0 +1,79 @@
+@import "@fontsource/barlow-condensed/600.css";
+@import "@fontsource/barlow-condensed/700.css";
+@import "tailwindcss";
+
+/* Gym logbook: paper, ink, ruled lines, one green accent. */
+:root {
+  color-scheme: light dark;
+  --paper: #f4f1ea;
+  --ink: #16181a;
+  --muted: #6b6a63;
+  --rule: #d9d4c7;
+  --accent: #1f7a3d;
+  --on-accent: #ffffff;
+  --warn: #8a5a00;
+  --field: #ebe7dc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121413;
+    --ink: #ecebe4;
+    --muted: #9a9a90;
+    --rule: #2a2d2b;
+    --accent: #4cc26b;
+    --on-accent: #07140a;
+    --warn: #e0a63a;
+    --field: #1b1e1c;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-warn: var(--warn);
+  --color-field: var(--field);
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+}
+
+@layer base {
+html { background: var(--paper); -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+button { cursor: pointer; font: inherit; color: inherit; border-radius: 0; }
+input, textarea { font: inherit; color: inherit; border-radius: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+::placeholder { color: var(--muted); opacity: 1; }
+}
+
+@layer components {
+  .display { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.015em; line-height: 1.05; }
+  .num { font-variant-numeric: tabular-nums; }
+  /* section: thick ink rule on top, like a heading line on a training sheet */
+  .sheet { border-top: 3px solid var(--ink); padding-top: 12px; }
+  .row { border-top: 1px solid var(--rule); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px;
+    background: var(--accent); color: var(--on-accent); border: 2px solid var(--accent);
+    font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-line { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn:disabled { opacity: 0.4; }
+  .field {
+    background: var(--field); border: 0; border-bottom: 2px solid var(--ink); text-align: center;
+    min-height: 46px; font-size: 20px; font-variant-numeric: tabular-nums; padding: 0 4px;
+  }
+  .label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+}
