@@ -65,11 +65,51 @@ export function progress(
   week: number,
   step: number,
   name: string,
+  loaded = false,
+): ProgressionResult {
+  const r = progressCore(ex, logged, feedback, week, step, name, loaded)
+  return climbLadder(r)
+}
+
+/** Move up a skill ladder once the target reaches levelUpAt. */
+export function climbLadder(r: ProgressionResult): ProgressionResult {
+  const ex = r.next
+  if (!ex.ladder || ex.levelUpAt == null) return r
+  const level = ex.level ?? 0
+  if (ex.target < ex.levelUpAt || level >= ex.ladder.length - 1) return r
+  const nextId = ex.ladder[level + 1]
+  return {
+    next: { ...ex, level: level + 1, exerciseId: nextId, target: ex.resetTo ?? ex.target, missStreak: 0 },
+    message: `Level up: ${pretty(ex.exerciseId)} -> ${pretty(nextId)}`,
+  }
+}
+
+function pretty(id: string): string {
+  return id.replace(/^X_/, '').replace(/_/g, ' ')
+}
+
+function progressCore(
+  ex: PlanExercise,
+  logged: SetLog[],
+  feedback: Feedback | undefined,
+  week: number,
+  step: number,
+  name: string,
   /** true for lifts that take a weight (so a blank weight is "not set yet", not "bodyweight") */
   loaded = false,
 ): ProgressionResult {
   const done = logged.filter((s) => s.done)
   if (done.length === 0) return { next: ex, message: null }
+  const unitStep = ex.incr ?? STEP_BY_UNIT[ex.unit]
+
+  // Bodyweight slot, first session: the target becomes what you actually managed.
+  if (ex.calibrate && !loaded && ex.unit === 'reps') {
+    const t = Math.max(1, Math.min(...done.map((s) => s.actual)))
+    return {
+      next: { ...ex, target: t, calibrate: false, missStreak: 0 },
+      message: `${name}: target set to ${t} reps from your first session`,
+    }
+  }
 
   // First time with a load: calibrate from what the user actually used.
   if (ex.unit === 'reps' && ex.weight == null) {
@@ -112,7 +152,7 @@ export function progress(
       }
     }
     // no load: add reps / seconds / minutes
-    const inc = STEP_BY_UNIT[ex.unit] * bump
+    const inc = unitStep * bump
     const t = ex.unit === 'sec' ? Math.min(MAX_HOLD_SEC, ex.target + inc) : ex.target + inc
     if (t === ex.target) return { next: { ...ex, missStreak: 0 }, message: `${name}: hold at ${t} ${ex.unit}` }
     return {
@@ -130,8 +170,8 @@ export function progress(
       message: `${name}: ${ex.weight} -> ${w} (reset after 2 misses)`,
     }
   }
-  if (streak >= 2 && ex.weight == null && ex.target > STEP_BY_UNIT[ex.unit]) {
-    const t = Math.max(1, ex.target - STEP_BY_UNIT[ex.unit])
+  if (streak >= 2 && ex.weight == null && ex.target > unitStep) {
+    const t = Math.max(1, ex.target - unitStep)
     return {
       next: { ...ex, target: t, missStreak: 0 },
       message: `${name}: ${ex.target} -> ${t} ${ex.unit} (reset after 2 misses)`,

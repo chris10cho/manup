@@ -14,6 +14,7 @@ const base: PlanExercise = {
 
 function sets(actuals: number[], weight: number | null, target = 5): SetLog[] {
   return actuals.map((a, i) => ({
+    slot: 0,
     exerciseId: 'x',
     setIndex: i,
     target,

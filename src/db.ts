@@ -1,13 +1,9 @@
 import { openDB } from 'idb'
 import type { BodyweightEntry, Profile, Program, Session } from './types'
 
-export interface MuTest {
-  date: string
-  reps: number
-}
-
 export interface AppState {
-  version: 1
+  /** 2 = calisthenics era. Anything older is wiped on load. */
+  version: 2
   profile: Profile
   program: Program
   sessions: Session[]
@@ -15,7 +11,6 @@ export interface AppState {
   /** user-pasted YouTube embeds by exercise id */
   videos: Record<string, string>
   bodyweight: BodyweightEntry[]
-  muTests: MuTest[]
 }
 
 const DB = 'workout-app'

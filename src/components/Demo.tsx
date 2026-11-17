@@ -39,7 +39,7 @@ export function Demo({ ex, video }: { ex: Exercise; video?: string }) {
       ) : (
         <div className="border border-rule p-4 text-sm text-muted">No demo photos for this move.</div>
       )}
-      {ex.custom && (
+      {ex.custom && frames.length > 0 && (
         <p className="mt-2 text-sm text-warn">Photos show a similar move. Read the steps below.</p>
       )}
       <a href={search} target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm underline underline-offset-4">

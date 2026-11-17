@@ -37,7 +37,7 @@ export function Settings() {
           }, {}),
       ),
     }))
-    return JSON.stringify({ profile: state.profile, week: state.program.week, program: state.program, muTests: state.muTests, recent }, null, 1)
+    return JSON.stringify({ profile: state.profile, week: state.program.week, program: state.program, recent }, null, 1)
   }
 
   async function copy(text: string, ok: string) {
@@ -109,7 +109,12 @@ export function Settings() {
             if (!f) return
             try {
               const s = JSON.parse(await f.text()) as AppState
-              if (s.version !== 1 || !s.program || !s.profile || !Array.isArray(s.sessions)) throw new Error('not a backup')
+              if (!s.program || !s.profile || !Array.isArray(s.sessions)) throw new Error('not a backup')
+              if (s.version !== 2) {
+                setMsg('That backup is from the old gym program, which was retired.')
+                e.target.value = ''
+                return
+              }
               if (confirm('Replace everything on this phone with this backup?')) {
                 store.replace(s)
                 setMsg('Backup restored.')

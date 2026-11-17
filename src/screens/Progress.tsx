@@ -1,119 +1,97 @@
-import { useState } from 'react'
 import { LineChart } from '../components/LineChart'
 import type { Pt } from '../components/LineChart'
+import { getExercise } from '../data/library'
 import { useStore } from '../store'
-import type { Session } from '../types'
+import type { PlanExercise, Session } from '../types'
 
-const BENCH = 'Barbell_Bench_Press_-_Medium_Grip'
-const fmt = (d: string) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-
-/** Best (heaviest) completed set per session for one exercise. */
-function bestWeight(sessions: Session[], id: string): Pt[] {
-  return sessions.flatMap((s) => {
-    const w = s.sets.filter((x) => x.exerciseId === id && x.done && x.weight).map((x) => x.weight as number)
-    return w.length ? [{ label: fmt(s.date), value: Math.max(...w) }] : []
-  })
-}
-function bestReps(sessions: Session[], id: string): Pt[] {
-  return sessions.flatMap((s) => {
-    const r = s.sets.filter((x) => x.exerciseId === id && x.done).map((x) => x.actual)
-    return r.length ? [{ label: fmt(s.date), value: Math.max(...r) }] : []
-  })
-}
-
-/** Best estimated one-rep max for an exercise in each training week (smooths heavy/volume days). */
-function weeklyE1rm(sessions: Session[], id: string): Pt[] {
+/** Best value per training week for sets matching `match` (reps or seconds). */
+function weeklyBest(sessions: Session[], match: (exerciseId: string) => boolean): Pt[] {
   const best = new Map<number, number>()
   for (const s of sessions)
     for (const x of s.sets)
-      if (x.exerciseId === id && x.done && x.weight)
-        best.set(s.week, Math.max(best.get(s.week) ?? 0, e1rm(x.weight, x.actual)))
+      if (x.done && match(x.exerciseId)) best.set(s.week, Math.max(best.get(s.week) ?? 0, x.actual))
   return [...best.entries()].sort((a, b) => a[0] - b[0]).map(([w, v]) => ({ label: `Wk ${w}`, value: v }))
 }
 
-/** Epley estimate of a one-rep max. */
-export function e1rm(weight: number, reps: number): number {
-  return reps <= 1 ? weight : Math.round(weight * (1 + reps / 30))
+const isBodyweight = (pattern: string) => (id: string) => {
+  const e = getExercise(id)
+  // skill drills and the scapular pull-up warm-up are not "pull-ups" for this chart
+  return !!e && e.pattern === pattern && e.kind === 'bodyweight' && !id.startsWith('X_FL') && id !== 'Scapular_Pull-Up'
 }
 
 export function Progress() {
-  const { state, addMuTest } = useStore()
-  const [mu, setMu] = useState('')
+  const { state } = useStore()
   const done = state.sessions.filter((s) => s.finished)
 
-  const bench = weeklyE1rm(done, BENCH)
-  // Best estimated 1RM across every logged bench set.
-  const benchSets = done.flatMap((s) => s.sets.filter((x) => x.exerciseId === BENCH && x.done && x.weight))
-  // Baseline is your 175 x 2. Light-ish training sets must never lower your estimate.
-  const BASE = e1rm(175, 2)
-  const logged = benchSets.length ? Math.max(...benchSets.map((x) => e1rm(x.weight as number, x.actual))) : 0
-  const est = Math.max(BASE, logged)
-  const estLabel = logged > BASE ? 'from your logged sets' : 'from your 175 × 2'
-  const toGo = Math.max(0, 225 - est)
+  // One row per skill ladder, taken from the first day that has it.
+  const skills: PlanExercise[] = []
+  for (const d of state.program.days)
+    for (const e of d.exercises) if (e.skill && e.ladder && !skills.some((x) => x.skill === e.skill)) skills.push(e)
 
-  const weighted = bestWeight(done, 'X_Weighted_Pullup')
-  const strict = bestReps(done, 'Pullups')
-  const expl = bestReps(done, 'X_Explosive_Pullup')
-  const bestMu = state.muTests.length ? Math.max(...state.muTests.map((t) => t.reps)) : 0
-  const sessions = done.length
+  const fl = skills.find((x) => x.skill === 'fl')
+  const flHolds = fl ? weeklyBest(done, (id) => id === fl.exerciseId) : []
+  const pulls = weeklyBest(done, isBodyweight('vpull'))
+  const pushes = weeklyBest(done, isBodyweight('hpush'))
 
   return (
     <div className="space-y-4 p-4">
       <h2 className="display text-4xl">Progress</h2>
 
       <div className="grid grid-cols-3 border-y-[3px] border-ink">
-        <Tile label="Sessions" value={String(sessions)} />
-        <Tile label="Est. bench max" value={`${est}`} sub="lb" />
-        <Tile label="Muscle-ups" value={String(bestMu)} sub="of 10" />
+        <Tile label="Sessions" value={String(done.length)} />
+        <Tile label="Week" value={String(state.program.week)} />
+        <Tile label="Skills" value={String(skills.length)} sub="ladders" />
       </div>
 
       <section className="sheet">
-        <h3 className="display text-2xl">Goal 1 · Bench 225</h3>
-        <p className="text-[15px] text-muted">
-          Estimated max {est} lb ({estLabel}). {toGo > 0 ? `${toGo} lb to go.` : 'Goal reached. Test a true single.'}
-        </p>
-        <div className="mt-3 h-4 border-2 border-ink" role="img" aria-label={`${Math.round((est / 225) * 100)} percent of goal`}>
-          <div className="h-full bg-accent" style={{ width: `${Math.min(100, (est / 225) * 100)}%` }} />
-        </div>
+        <h3 className="display text-2xl">Skill ladders</h3>
+        <p className="text-[15px] text-muted">Bar shows how close you are to the next step.</p>
+        <ul className="mt-2">
+          {skills.map((e) => {
+            const level = e.level ?? 0
+            const top = level >= (e.ladder?.length ?? 1) - 1
+            const pct = top || !e.levelUpAt ? 100 : Math.min(100, Math.round((e.target / e.levelUpAt) * 100))
+            const unit = e.unit === 'sec' ? 's' : ' reps'
+            return (
+              <li key={e.skill} className="row py-2.5">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="display text-xl">{e.label ?? e.skill}</span>
+                  <span className="num shrink-0 text-sm text-muted">
+                    {level + 1}/{e.ladder?.length}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between gap-2 text-[15px]">
+                  <span>{getExercise(e.exerciseId)?.name}</span>
+                  <span className="num shrink-0 text-muted">
+                    {e.target}
+                    {unit}
+                    {!top && e.levelUpAt ? ` / ${e.levelUpAt}${unit}` : ''}
+                  </span>
+                </div>
+                <div
+                  className="mt-1.5 h-2.5 border border-ink"
+                  role="img"
+                  aria-label={top ? 'Top level' : `${pct} percent of the way to the next level`}
+                >
+                  <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
+                </div>
+              </li>
+            )
+          })}
+        </ul>
       </section>
-      <LineChart title="Bench: estimated max by week" unit="lb" points={bench} goal={225} goalLabel="Goal" />
 
-      <section className="sheet">
-        <h3 className="display text-2xl">Goal 2 · 10 muscle-ups</h3>
-        <p className="text-[15px] text-muted">
-          Test a max set every 4 weeks, fresh, on a day you are not climbing. Log the best clean reps.
-        </p>
-        <div className="mt-2 flex gap-2">
-          <input
-            inputMode="numeric"
-            value={mu}
-            onChange={(e) => setMu(e.target.value)}
-            placeholder="Clean reps"
-            aria-label="Clean muscle-up reps"
-            className="field min-w-0 flex-1"
-          />
-          <button
-            onClick={() => {
-              const n = Number(mu)
-              if (Number.isFinite(n) && n >= 0 && mu !== '') {
-                addMuTest(n)
-                setMu('')
-              }
-            }}
-            className="btn"
-          >
-            Log test
-          </button>
-        </div>
-        {state.muTests.length > 0 && (
-          <p className="num mt-2 text-[13px] text-muted">
-            {state.muTests.map((t) => `${fmt(t.date)}: ${t.reps}`).join(' · ')}
-          </p>
-        )}
-      </section>
-      <LineChart title="Weighted pull-up: heaviest" unit="lb" points={weighted} />
-      <LineChart title="Explosive pull-ups: best set" unit="reps" points={expl} />
-      <LineChart title="Strict pull-ups: best set" unit="reps" points={strict} />
+      {fl && (
+        <LineChart
+          title={`${getExercise(fl.exerciseId)?.name ?? 'Front lever'}: best hold`}
+          unit="s"
+          points={flHolds}
+          goal={fl.levelUpAt}
+          goalLabel="Next level"
+        />
+      )}
+      <LineChart title="Pull-ups: best set by week" unit="reps" points={pulls} />
+      <LineChart title="Push-ups: best set by week" unit="reps" points={pushes} />
     </div>
   )
 }

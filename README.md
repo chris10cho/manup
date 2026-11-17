@@ -1,10 +1,11 @@
 # Manup
 
-Mobile workout log for two goals: bench 225 lb and 10 muscle-ups. Installable web app, data stays on your phone.
+Mobile calisthenics log: front lever, planche and handstand push-up, core strength, flexibility. Needs only a doorframe pull-up bar, a wall and the floor. Installable web app; data stays on your phone.
 
-- Today screen with the trainer's sets and reps, you log weight
-- Play button shows a demo for each exercise
-- Weights adjust automatically after each session
+- Today screen with the trainer's sets and targets; you log reps or seconds
+- Random variations for pull-ups, push-ups, legs and core (tap Shuffle to reroll)
+- Skill ladders that level you up automatically (tuck front lever -> advanced tuck -> ...)
+- Play button shows a demo or links a form video for each exercise
 - More tab: copy logs for the trainer, load an updated program, back up and restore
 
 Live: https://chris10cho.github.io/manup/

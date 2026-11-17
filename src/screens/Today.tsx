@@ -47,16 +47,19 @@ export function Today() {
             {isDeloadWeek(week) ? ' · deload, go lighter' : ''} · {doneSets}/{active.sets.length} sets
           </p>
         </div>
-        {day.exercises.map((pe, i) => (
+        {day.exercises.map((pe, i) => {
+          const sets = active.sets.filter((s) => s.slot === i)
+          return (
           <ExerciseCard
             index={i}
-            key={pe.exerciseId}
+            key={i}
             pe={pe}
-            sets={active.sets.filter((s) => s.exerciseId === pe.exerciseId)}
-            last={lastFor(state.sessions, pe.exerciseId)}
+            sets={sets}
+            last={lastFor(state.sessions, sets[0]?.exerciseId ?? pe.exerciseId)}
             onSetDone={(sec) => setRest(sec)}
           />
-        ))}
+          )
+        })}
         <div className="sheet py-4">
           <p className="label mb-2">How did it feel?</p>
           <div className="grid grid-cols-3 border-2 border-ink">
@@ -112,7 +115,7 @@ export function Today() {
           minutes={estimate(next.exercises)}
           primary
           action={() => store.start(next.id)}
-          names={next.exercises.map((e) => getExercise(e.exerciseId)?.name ?? e.exerciseId)}
+          names={next.exercises.map((e) => e.label ?? getExercise(e.exerciseId)?.name ?? e.exerciseId)}
           sets={next.exercises.reduce((n, e) => n + displaySets(e.sets, week), 0)}
         />
       )}
@@ -195,7 +198,7 @@ function DayCard(p: {
       </p>
       <ol className="mt-3">
         {p.names.map((n, i) => (
-          <li key={n} className="row flex gap-3 py-1.5 text-[15px]">
+          <li key={n + i} className="row flex gap-3 py-1.5 text-[15px]">
             <span className="num w-6 text-muted">{String(i + 1).padStart(2, '0')}</span>
             {n}
           </li>

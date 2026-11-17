@@ -17,10 +17,12 @@ export function ExerciseCard({
   sets: SetLog[]
   onSetDone: (restSec: number) => void
   last?: string
+  /** slot index within the day */
   index: number
 }) {
-  const { state, updateSet, setVideo } = useStore()
-  const ex = getExercise(pe.exerciseId)
+  const { state, updateSet, setVideo, reroll } = useStore()
+  // The variation picked for this workout (random slots) or the current ladder step.
+  const ex = getExercise(sets[0]?.exerciseId ?? pe.exerciseId)
   const [open, setOpen] = useState(false)
   const [link, setLink] = useState('')
   if (!ex) return null
@@ -33,8 +35,19 @@ export function ExerciseCard({
     <section className="sheet py-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="label num">{String(index + 1).padStart(2, '0')}</div>
+          <div className="label num">
+            {String(index + 1).padStart(2, '0')}
+            {pe.label ? ` · ${pe.label}` : ''}
+          </div>
           <h3 className="display text-[26px]">{ex.name}</h3>
+          {pe.ladder && (
+            <p className="num text-[13px] text-muted">
+              Level {(pe.level ?? 0) + 1} of {pe.ladder.length}
+              {pe.levelUpAt != null && (pe.level ?? 0) < pe.ladder.length - 1
+                ? ` · next: ${getExercise(pe.ladder[(pe.level ?? 0) + 1])?.name ?? ''} at ${pe.levelUpAt} ${unitLabel[pe.unit]}`
+                : ' · top level'}
+            </p>
+          )}
           <p className="num mt-1 text-[15px] text-muted">
             {sets.length} × {pe.target} {unitLabel[pe.unit]}
             {pe.weight != null && loaded ? ` @ ${sets[0]?.weight ?? pe.weight} ${units}` : ''}
@@ -42,9 +55,16 @@ export function ExerciseCard({
           </p>
           {last && <p className="num text-[13px] text-muted">Last: {last}</p>}
         </div>
-        <button onClick={() => setOpen((o) => !o)} aria-expanded={open} className="btn btn-line shrink-0 !min-h-11 !px-3 !text-base">
-          {open ? 'Hide demo' : 'Play demo'}
-        </button>
+        <div className="flex shrink-0 flex-col gap-2">
+          <button onClick={() => setOpen((o) => !o)} aria-expanded={open} className="btn btn-line !min-h-11 !px-3 !text-base">
+            {open ? 'Hide demo' : 'Play demo'}
+          </button>
+          {pe.pool && pe.pool.length > 1 && done === 0 && (
+            <button onClick={() => reroll(index)} className="btn btn-line !min-h-11 !px-3 !text-base" aria-label={`Shuffle ${pe.label ?? ex.name}`}>
+              Shuffle
+            </button>
+          )}
+        </div>
       </header>
 
       {pe.note && <p className="mt-3 border-l-[3px] border-accent pl-3 text-[15px]">{pe.note}</p>}
@@ -96,7 +116,7 @@ export function ExerciseCard({
                 value={s.weight ?? ''}
                 placeholder="–"
                 onChange={(e) =>
-                  updateSet(s.exerciseId, s.setIndex, { weight: e.target.value === '' ? null : Number(e.target.value) })
+                  updateSet(index, s.setIndex, { weight: e.target.value === '' ? null : Number(e.target.value) })
                 }
                 className="field w-full"
               />
@@ -109,7 +129,7 @@ export function ExerciseCard({
                 type="number"
                 aria-label={`Set ${s.setIndex + 1} ${unitLabel[pe.unit]}`}
                 value={s.actual}
-                onChange={(e) => updateSet(s.exerciseId, s.setIndex, { actual: Number(e.target.value) })}
+                onChange={(e) => updateSet(index, s.setIndex, { actual: Number(e.target.value) })}
                 className="field w-full"
               />
               <span className="num shrink-0 text-sm text-muted">/{s.target}</span>
@@ -118,7 +138,7 @@ export function ExerciseCard({
               aria-label={`Set ${s.setIndex + 1} done`}
               aria-pressed={s.done}
               onClick={() => {
-                updateSet(s.exerciseId, s.setIndex, { done: !s.done })
+                updateSet(index, s.setIndex, { done: !s.done })
                 if (!s.done && pe.restSec) onSetDone(pe.restSec)
               }}
               className={`grid h-12 w-12 place-items-center border-2 active:translate-y-px ${

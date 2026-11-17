@@ -28,12 +28,24 @@ export function Plan() {
         <section key={d.id} className="sheet">
           <h3 className="display text-2xl">{d.when ? `${d.when} · ` : ''}{d.label}</h3>
           <ul className="mt-2 text-[15px]">
-            {d.exercises.map((pe) => {
+            {d.exercises.map((pe, i) => {
               const e = getExercise(pe.exerciseId)
               const w = displayWeight(pe.weight, program.week, stepFor(pe.exerciseId, profile.units))
               return (
-                <li key={pe.exerciseId} className="row flex justify-between gap-2 py-1.5">
-                  <span>{e?.name ?? pe.exerciseId}</span>
+                <li key={i} className="row flex justify-between gap-2 py-1.5">
+                  <span className="min-w-0">
+                    <span className="block">{pe.pool ? pe.label : e?.name ?? pe.exerciseId}</span>
+                    {pe.pool && (
+                      <span className="block text-[13px] text-muted">
+                        Random from: {pe.pool.map((id) => getExercise(id)?.name ?? id).join(', ')}
+                      </span>
+                    )}
+                    {pe.ladder && (
+                      <span className="block text-[13px] text-muted">
+                        {pe.label} · level {(pe.level ?? 0) + 1} of {pe.ladder.length}
+                      </span>
+                    )}
+                  </span>
                   <span className="num shrink-0 text-muted">
                     {displaySets(pe.sets, program.week)}×{pe.target}
                     {pe.unit === 'sec' ? 's' : pe.unit === 'min' ? 'min' : ''}
@@ -45,7 +57,7 @@ export function Plan() {
           </ul>
         </section>
       ))}
-      {isDeloadWeek(program.week) && <p className="text-sm text-warn">Deload week: lighter weights and fewer sets shown.</p>}
+      {isDeloadWeek(program.week) && <p className="text-sm text-warn">Deload week: fewer sets shown. Take it easy.</p>}
     </div>
   )
 }

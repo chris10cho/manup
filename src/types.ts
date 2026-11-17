@@ -68,6 +68,25 @@ export interface PlanExercise {
   /** consecutive sessions where the target was missed */
   missStreak: number
   note?: string
+  /** Short display name for the slot, e.g. "Pull-up (random grip)". */
+  label?: string
+  /** Random variation pool: one is picked per workout. exerciseId is the default. */
+  pool?: string[]
+  /** Skill ladder, easiest first. exerciseId is always ladder[level]. */
+  ladder?: string[]
+  level?: number
+  /** Move to the next ladder step once the target reaches this. */
+  levelUpAt?: number
+  /** Target to restart at after a level-up. */
+  resetTo?: number
+  /** Ladders with the same skill key share their level across days. */
+  skill?: string
+  /** Step size for reps/sec targets (default 1 rep, 5 s, 2 min). */
+  incr?: number
+  /** Set the rep target from what you actually do in your first session. */
+  calibrate?: boolean
+  /** Warm-up or drill that never progresses. */
+  fixed?: boolean
 }
 
 export interface PlanDay {
@@ -94,6 +113,8 @@ export interface Program {
 }
 
 export interface SetLog {
+  /** index of the exercise slot within the day */
+  slot: number
   exerciseId: string
   setIndex: number
   /** prescribed target at the time (reps/sec/min) */
