@@ -7,12 +7,12 @@ Mobile-first workout tracker (React + TypeScript + Vite PWA). Claude is the trai
 - Equipment: ONLY a doorframe pull-up bar (wide, normal, neutral and chin-up grips), floor, wall, a chair. No rings, no parallettes, no dip bars, no weights. Front lever torque can tip a hook-over-the-trim doorframe bar; keep that warning in the notes.
 - Goals, in priority order:
   1. Front lever (start: tuck lever 5 to 10 s).
-  2. Planche and handstand push-up (start: chest-to-wall handstand 30 s+).
+  2. Planche. (Handstands and handstand push-ups were dropped at the user's request, Nov 2026; do not add them back.)
   3. Core strength (L-sit, hollow body, hanging leg raises).
   4. Flexibility (pike, pancake, shoulders, wrists).
 - Wants training to be fun: pull-up, push-up, legs and core slots pick a random variation each workout.
 - Outside training: climbs Saturday, plays soccer Sunday morning.
-- Weekly layout: Mon pull + front lever, Tue push + handstand + planche, Wed legs + core, Thu optional skills + wildcard, Fri flexibility, Sat climb, Sun soccer.
+- Weekly layout: Mon pull + front lever, Tue push + planche, Wed legs + core, Thu optional skills + wildcard, Fri flexibility, Sat climb, Sun soccer.
 - Rules of thumb: no pulling on Friday (grip fresh for Saturday climbing). Legs midweek, away from Sunday soccer. Sessions 45 to 60 min. Skills first in a session, while fresh.
 
 ## Where things are

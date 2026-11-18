@@ -64,8 +64,6 @@ const warmup = (id: string, sets: number, target: number, unit: TargetUnit, note
 const FL = ['X_FL_Tuck', 'X_FL_AdvTuck', 'X_FL_OneLeg', 'X_FL_Straddle']
 const FL_ROW = ['X_FL_Tuck_Row', 'X_FL_AdvTuck_Row']
 const HANG_CORE = ['X_Hanging_Knee_Raise', 'Hanging_Leg_Raise', 'Hanging_Pike']
-const HSPU = ['X_Pike_Pushup_Elevated', 'X_HSPU_Negative', 'Handstand_Push-Ups', 'X_HSPU_Deficit']
-const HS_FREE = ['X_HS_Kickup', 'X_HS_Free']
 const PLANCHE = ['X_Planche_Lean', 'X_Frog_Stand', 'X_Tuck_Planche', 'X_Adv_Tuck_Planche']
 const PISTOL = ['X_Assisted_Pistol', 'X_Box_Pistol', 'X_Pistol']
 const HOLLOW = ['X_Hollow_Tuck', 'X_Hollow_Hold']
@@ -85,7 +83,7 @@ const HIP_STRETCH = ['Kneeling_Hip_Flexor', 'Worlds_Greatest_Stretch', 'IT_Band_
 export const SEED_PROFILE: Profile = {
   goals: [
     { id: 'g1', type: 'skill', target: 'Front lever (now: tuck lever 5 to 10 s)' },
-    { id: 'g2', type: 'skill', target: 'Planche and handstand push-up (now: wall handstand 30 s+)' },
+    { id: 'g2', type: 'skill', target: 'Planche' },
     { id: 'g3', type: 'strength', target: 'Core strength: L-sit, hollow body, hanging leg raises' },
     { id: 'g4', type: 'mobility', target: 'Flexibility: pike, pancake, shoulders, wrists' },
   ],
@@ -125,23 +123,24 @@ const days: PlanDay[] = [
   },
   {
     id: 'd1',
-    label: 'Day 2 · Push + Handstand + Planche',
+    label: 'Day 2 · Push + Planche',
     when: 'Tue',
-    focus: 'Handstand push-up, planche, push-ups',
+    focus: 'Planche, pike push-ups, push-ups',
     exercises: [
-      stretch('Wrist_Circles', 1, 30, 'Wrist prep. Planche and handstands load the wrists hard.'),
+      stretch('Wrist_Circles', 1, 30, 'Wrist prep. Planche work loads the wrists hard.'),
       stretch('Kneeling_Forearm_Stretch', 1, 30),
-      base('X_HS_Wall_Hold', 3, 35, 'sec', 60),
-      ladder('hspu', HSPU, 1, 4, 3, 'reps', 120, 6, 2, 1, {
-        label: 'Handstand push-up',
-        note: 'Folded towel under your head. Slow and controlled.',
-      }),
       ladder('planche', PLANCHE, 0, 4, 15, 'sec', 90, 25, 6, 2, {
         label: 'Planche',
-        note: 'Straight arms, shoulders pushed forward past the hands.',
+        note: 'Skill first, while fresh. Straight arms, shoulders pushed forward past the hands.',
       }),
       { ...base('X_PPPU', 3, 6, 'reps', 90), calibrate: true },
+      {
+        ...base('X_Pike_Pushup_Elevated', 3, 8, 'reps', 90),
+        calibrate: true,
+        note: 'Shoulder strength for the planche. Feet on a chair, hips high.',
+      },
       pool('Push-up (random variation)', PUSH, 3, 15, 75),
+      pool('Push challenge (random)', PUSH_CHALLENGE, 2, 6, 90),
       stretch('Chest_And_Front_Of_Shoulder_Stretch', 2, 30, 'Per side.'),
     ],
   },
@@ -171,11 +170,8 @@ const days: PlanDay[] = [
       warmup('Scapular_Pull-Up', 1, 10, 'reps'),
       stretch('Wrist_Circles', 1, 30),
       ladder('fl', FL, 0, 4, 8, 'sec', 90, 15, 6, 1, { label: 'Front lever hold' }),
-      ladder('hs-free', HS_FREE, 0, 4, 5, 'sec', 60, 15, 10, 1, {
-        label: 'Freestanding handstand',
-        note: 'Learn to bail first (cartwheel out). Log your best balance in each set.',
-      }),
       ladder('planche', PLANCHE, 0, 3, 15, 'sec', 90, 25, 6, 2, { label: 'Planche' }),
+      ladder('lsit', LSIT, 0, 3, 10, 'sec', 60, 20, 8, 2, { label: 'L-sit' }),
       pool('Pull-up (random grip)', PULL, 3, 8, 90),
       pool('Push challenge (random)', PUSH_CHALLENGE, 3, 6, 90),
       pool('Wildcard (random)', WILDCARD, 3, 10, 60, { note: 'Something different every time. Go hard, keep form.' }),
@@ -201,7 +197,7 @@ const days: PlanDay[] = [
 ]
 
 export const SEED_PROGRAM: Program = {
-  id: 'seed-4',
+  id: 'seed-5',
   outside: [
     { when: 'Sat', label: 'Climbing' },
     { when: 'Sun', label: 'Soccer (morning)' },
@@ -215,8 +211,8 @@ export const SEED_PROGRAM: Program = {
     'Random slots pick a new variation each workout (never the same as last time, and not repeated within a workout). Tap "Shuffle" before your first set to reroll.',
     'Skill ladders move you up automatically. Example: once your tuck front lever holds reach 15 s, you move to advanced tuck at 6 s. A level reached on one day applies to every day.',
     'Rep targets for push-up and pull-up slots start as a guess. On your first session, type what you actually did; that becomes the target.',
-    'Realistic timelines: advanced tuck front lever in about 2 to 4 months; a full front lever usually takes 1 to 2+ years. Wall handstand push-ups often come within 1 to 3 months from a solid wall hold. Planche is the slowest skill: tuck planche in months, full planche in years.',
-    'Week layout: Mon pull + front lever, Tue push + handstand + planche, Wed legs + core, Thu optional skills, Fri flexibility, Sat climb, Sun soccer. No pulling on Friday so your grip is fresh for climbing.',
+    'Realistic timelines: advanced tuck front lever in about 2 to 4 months; a full front lever usually takes 1 to 2+ years. Planche is the slowest skill: tuck planche in months, full planche in years.',
+    'Week layout: Mon pull + front lever, Tue push + planche, Wed legs + core, Thu optional skills, Fri flexibility, Sat climb, Sun soccer. No pulling on Friday so your grip is fresh for climbing.',
     'Every 4th week is a lighter deload week (fewer sets). Do not skip it.',
   ],
 }
