@@ -79,8 +79,7 @@ describe('built-in calisthenics program', () => {
     for (const e of fri.exercises)
       for (const id of [e.exerciseId, ...(e.pool ?? [])]) expect(getExercise(id)?.kind).toBe('mobility')
   })
-  // Switched on together with the drawings in public/demos (in progress).
-  it.skip('gives every exercise in the program at least one demo picture', () => {
+  it('gives every exercise in the program at least one demo picture', () => {
     const missing = new Set<string>()
     for (const d of SEED_PROGRAM.days)
       for (const e of d.exercises)
