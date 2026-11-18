@@ -9,7 +9,8 @@ import type { Feedback } from '../types'
 export function Today() {
   const store = useStore()
   const { state } = store
-  const [rest, setRest] = useState<number | null>(null)
+  // `id` changes on every completed set so the timer restarts even when the rest length is the same
+  const [rest, setRest] = useState<{ sec: number; id: number } | null>(null)
   const [summary, setSummary] = useState<string[] | null>(null)
   const [feedback, setFeedback] = useState<Feedback>('ok')
   const active = state.active
@@ -56,7 +57,7 @@ export function Today() {
             pe={pe}
             sets={sets}
             last={lastFor(state.sessions, sets[0]?.exerciseId ?? pe.exerciseId)}
-            onSetDone={(sec) => setRest(sec)}
+            onSetDone={(sec) => setRest((r) => ({ sec, id: (r?.id ?? 0) + 1 }))}
           />
           )
         })}
@@ -91,7 +92,7 @@ export function Today() {
             Discard workout
           </button>
         </div>
-        {rest != null && <RestTimer seconds={rest} onClose={() => setRest(null)} />}
+        {rest != null && <RestTimer key={rest.id} seconds={rest.sec} onClose={() => setRest(null)} />}
       </div>
     )
   }
