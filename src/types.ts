@@ -51,6 +51,8 @@ export interface Exercise {
   frames: string[]
   /** demo photos borrowed from a similar move, not an exact match */
   custom?: boolean
+  /** frames are our own drawings of this exact move */
+  illustrated?: boolean
 }
 
 /** What the target number means for this exercise. */

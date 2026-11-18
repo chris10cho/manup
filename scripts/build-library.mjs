@@ -264,13 +264,21 @@ const custom = [
     ],
   },
 ];
+// Our own drawings: public/demos/<id>-0.svg (and -1.svg for a second frame).
+const illustrations = (id) =>
+  ['0', '1'].map((n) => `demos/${id}-${n}.svg`).filter((f) => fs.existsSync(`public/${f}`));
+
 for (const c of custom) {
+  const drawn = illustrations(c.id);
+  if (!c.borrow && drawn.length === 0) console.error('NO PICTURE', c.id);
   const b = c.borrow ? byId.get(c.borrow) : null;
   if (c.borrow && !b) console.error('MISSING BORROW', c.borrow);
   out.push({
     id: c.id, name: c.name, kind: c.kind, pattern: c.pattern, equip: c.equip, level: 'intermediate',
-    muscles: b ? b.primaryMuscles : [], instructions: c.instructions, frames: b ? b.images : [],
+    muscles: b ? b.primaryMuscles : [], instructions: c.instructions,
+    frames: drawn.length ? drawn : b ? b.images : [],
     custom: true,
+    ...(drawn.length ? { illustrated: true } : {}),
   });
 }
 fs.mkdirSync('src/data', { recursive: true });

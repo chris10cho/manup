@@ -13,7 +13,8 @@ const BASE = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/ex
 
 /** Start/end position photos for the demo loop. */
 export function frameUrls(ex: Exercise): string[] {
-  return ex.frames.map((f) => BASE + f)
+  // Our own drawings ship with the app (and are cached offline); the rest come from free-exercise-db.
+  return ex.frames.map((f) => (f.startsWith('demos/') ? import.meta.env.BASE_URL + f : BASE + f))
 }
 
 /** Turn a pasted YouTube link into an embeddable one. Returns null if not recognised. */
