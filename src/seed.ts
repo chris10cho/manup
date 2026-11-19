@@ -148,11 +148,15 @@ const days: PlanDay[] = [
     id: 'd2',
     label: 'Day 3 · Legs + Core',
     when: 'Wed',
-    focus: 'Pistol squat, nordics, L-sit, hollow body',
+    focus: 'Pistol squat, glute bridges, L-sit, hollow body',
     exercises: [
       ladder('pistol', PISTOL, 0, 4, 6, 'reps', 90, 10, 4, 1, { label: 'Pistol squat', note: 'Per leg.' }),
       pool('Legs (random)', LEGS, 3, 12, 60, { note: 'Per leg for lunges and split squats.' }),
-      { ...base('X_Nordic', 3, 4, 'reps', 120), incr: 1 },
+      {
+        ...base('Single_Leg_Glute_Bridge', 3, 12, 'reps', 60),
+        calibrate: true,
+        note: 'Hamstrings and glutes. Per leg. Drive through the heel, pause 1 s at the top.',
+      },
       ladder('lsit', LSIT, 0, 4, 10, 'sec', 60, 20, 8, 2, { label: 'L-sit' }),
       ladder('hollow', HOLLOW, 1, 3, 20, 'sec', 45, 40, 15, 5, { label: 'Hollow body hold' }),
       pool('Core (random)', CORE, 3, 12, 45),
@@ -197,7 +201,7 @@ const days: PlanDay[] = [
 ]
 
 export const SEED_PROGRAM: Program = {
-  id: 'seed-5',
+  id: 'seed-6',
   outside: [
     { when: 'Sat', label: 'Climbing' },
     { when: 'Sun', label: 'Soccer (morning)' },

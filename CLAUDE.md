@@ -4,7 +4,7 @@ Mobile-first workout tracker (React + TypeScript + Vite PWA). Claude is the trai
 
 ## The user and their goals (keep the program consistent with these)
 - Switched from gym lifting to calisthenics (Nov 2026; the gym got too crowded). Old gym data was wiped on purpose.
-- Equipment: ONLY a doorframe pull-up bar (wide, normal, neutral and chin-up grips), floor, wall, a chair. No rings, no parallettes, no dip bars, no weights. Front lever torque can tip a hook-over-the-trim doorframe bar; keep that warning in the notes.
+- Equipment: ONLY a doorframe pull-up bar (wide, normal, neutral and chin-up grips), floor, wall, a chair. No rings, no parallettes, no dip bars, no weights, and nothing heavy enough to anchor nordic curls (dropped Nov 2026). Front lever torque can tip a hook-over-the-trim doorframe bar; keep that warning in the notes.
 - Goals, in priority order:
   1. Front lever (start: tuck lever 5 to 10 s).
   2. Planche. (Handstands and handstand push-ups were dropped at the user's request, Nov 2026; do not add them back.)
